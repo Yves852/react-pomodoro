@@ -3,24 +3,28 @@ import PomodoroTimer from "./components/pomodoro-timer";
 import Menu from "./components/menu";
 
 export default function App() {
-    const [myTimer, setTimer] = useState(0);
+    /**
+     * According to Francesco Cirillo, work should be divided to shunks of 25 minutes
+     * separated with pauses. Therefore the default value will be 25 * 60 so 1500 seconds
+     */
+    const [myTimer, setTimer] = useState(1500);
 
     /**
-     * Add 10 seconds to the timer
+     * Add 5 minutes to the timer
      */
     const addTime = () => {
-        const newTimer = myTimer + 10;
+        const newTimer = myTimer + 300;
         setTimer(newTimer);
     };
 
     /**
-     * Remove 10 seconds to the timer
+     * Remove 5 minutes to the timer
      */
     const removeTime = () => {
         if (myTimer <= 0) {
             return;
         }
-        const newTimer = myTimer - 10;
+        const newTimer = myTimer - 300;
         setTimer(newTimer);
     };
 
