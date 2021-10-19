@@ -7,7 +7,6 @@ export default function PomodoroTimer(props) {
      */
     const minutes = Math.floor(props.myTimer / 60);
     const seconds = Math.floor(props.myTimer % 60);
-    console.log(props.myTimer, " = ", minutes, " : ", seconds);
 
     return (
         <>

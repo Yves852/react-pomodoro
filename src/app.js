@@ -8,6 +8,7 @@ export default function App() {
      * separated with pauses. Therefore the default value will be 25 * 60 so 1500 seconds
      */
     const [myTimer, setTimer] = useState(1500);
+    const [counting, setCounting] = useState(false);
 
     /**
      * Add 5 minutes to the timer
@@ -28,12 +29,37 @@ export default function App() {
         setTimer(newTimer);
     };
 
+    /**
+     * Calling this function reverse the 'counting' state on and off. This state is used to control timer progression.
+     * Wrap reversion in a promise to make instructions synchronous.
+     */
+    const startStop = () => {
+        const a = new Promise(resolve => {
+            const isCounting = !counting;
+            setCounting(isCounting);
+            resolve(isCounting);
+        });
+        a.then(isCounting => {
+            console.log("counting", isCounting);
+            if (isCounting) {
+                console.log("Timer started");
+            } else {
+                console.log("Timer stopped");
+            }
+        });
+    };
+
     return (
         <div className={"App"}>
             <div className={"flex"}>
                 <h1>{"Pomodoro"}</h1>
                 <PomodoroTimer myTimer={myTimer} />
-                <Menu addTime={addTime} removeTime={removeTime} />
+                <Menu
+                    addTime={addTime}
+                    removeTime={removeTime}
+                    counting={counting}
+                    startStop={startStop}
+                />
             </div>
         </div>
     );

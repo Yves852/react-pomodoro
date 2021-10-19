@@ -22,10 +22,10 @@ export default function Menu(props) {
             <button
                 type={"button"}
                 onClick={() => {
-                    console.log("clicked Start");
+                    props.startStop();
                 }}
                 className={"button--normal"}>
-                {"Start"}
+                {!props.counting ? "Start" : "Stop"}
             </button>
             <button
                 type={"button"}
