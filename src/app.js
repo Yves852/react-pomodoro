@@ -8,12 +8,15 @@ export default function App() {
      * separated with pauses. Therefore the default value will be 25 * 60 so 1500 seconds
      */
     const [myTimer, setTimer] = useState(1500);
-    const [counting, setCounting] = useState(false);
+    const [isCounting, setIsCounting] = useState(false);
 
     /**
      * Add 5 minutes to the timer
      */
     const addTime = () => {
+        if (isCounting) {
+            return;
+        }
         const newTimer = myTimer + 300;
         setTimer(newTimer);
     };
@@ -22,7 +25,7 @@ export default function App() {
      * Remove 5 minutes to the timer
      */
     const removeTime = () => {
-        if (myTimer <= 0) {
+        if (isCounting || myTimer <= 0) {
             return;
         }
         const newTimer = myTimer - 300;
@@ -30,18 +33,18 @@ export default function App() {
     };
 
     /**
-     * Calling this function reverse the 'counting' state on and off. This state is used to control timer progression.
+     * Calling this function reverse the 'isCounting' state on and off. This state is used to control timer progression.
      * Wrap reversion in a promise to make instructions synchronous.
      */
     const startStop = () => {
         const a = new Promise(resolve => {
-            const isCounting = !counting;
-            setCounting(isCounting);
-            resolve(isCounting);
+            const newCounting = !isCounting;
+            setIsCounting(newCounting);
+            resolve(newCounting);
         });
-        a.then(isCounting => {
-            console.log("counting", isCounting);
-            if (isCounting) {
+        a.then(newCounting => {
+            console.log("isCounting", newCounting);
+            if (newCounting) {
                 console.log("Timer started");
             } else {
                 console.log("Timer stopped");
@@ -57,7 +60,7 @@ export default function App() {
                 <Menu
                     addTime={addTime}
                     removeTime={removeTime}
-                    counting={counting}
+                    isCounting={isCounting}
                     startStop={startStop}
                 />
             </div>
