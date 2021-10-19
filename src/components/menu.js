@@ -8,7 +8,9 @@ export default function Menu(props) {
                 onClick={() => {
                     props.addTime();
                 }}
-                className={"button--big"}>
+                className={`btn btn--big ${
+                    props.isCounting ? "btn--disabled" : ""
+                }`}>
                 {"+"}
             </button>
             <button
@@ -16,7 +18,9 @@ export default function Menu(props) {
                 onClick={() => {
                     props.removeTime();
                 }}
-                className={"button--big"}>
+                className={`btn btn--big ${
+                    props.isCounting ? "btn--disabled" : ""
+                }`}>
                 {"-"}
             </button>
             <button
@@ -24,15 +28,15 @@ export default function Menu(props) {
                 onClick={() => {
                     props.startStop();
                 }}
-                className={"button--normal"}>
-                {!props.counting ? "Start" : "Stop"}
+                className={"btn btn--normal"}>
+                {!props.isCounting ? "Start" : "Stop"}
             </button>
             <button
                 type={"button"}
                 onClick={() => {
                     console.log("clicked Reset");
                 }}
-                className={"button--normal"}>
+                className={"btn btn--normal"}>
                 {"Reset"}
             </button>
         </div>

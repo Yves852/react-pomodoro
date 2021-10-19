@@ -35,7 +35,7 @@ h1 {
     width: 260px; /* 2 * 110 + 4 * 10 */
     height: 190px; /* 2 * 75 + 4 * 10 */
 
-    button {
+    .btn {
         margin: 10px;
         width: 110px;
         height: 75px;
@@ -43,13 +43,18 @@ h1 {
         color: darkgray;
         border: none;
         border-radius: 10px;
-    }
 
-    .button--big {
-        font-size: 3.5em;
-    }
+        &--disabled {
+            background-color: rgb(26, 26, 26);
+            color: rgb(41, 41, 41);
+        }
 
-    .button--normal {
-        font-size: 2em;
+        &--big {
+            font-size: 3.5em;
+        }
+
+        &--normal {
+            font-size: 2em;
+        }
     }
 }
