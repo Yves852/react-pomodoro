@@ -1,12 +1,12 @@
 import React from "react";
 
-export default function Menu() {
+export default function Menu(props) {
     return (
         <div className={"menu"}>
             <button
                 type={"button"}
                 onClick={() => {
-                    console.log("clicked +");
+                    props.addTime();
                 }}
                 className={"button--big"}>
                 {"+"}
@@ -14,7 +14,7 @@ export default function Menu() {
             <button
                 type={"button"}
                 onClick={() => {
-                    console.log("clicked -");
+                    props.removeTime();
                 }}
                 className={"button--big"}>
                 {"-"}
