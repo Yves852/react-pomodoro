@@ -3,11 +3,13 @@ import PomodoroTimer from "./components/pomodoro-timer";
 import Menu from "./components/menu";
 
 export default function App() {
+    const defaultTime = 1500;
+
     /**
      * According to Francesco Cirillo, work should be divided to shunks of 25 minutes
      * separated with pauses. Therefore the default value will be 25 * 60 so 1500 seconds
      */
-    const [myTimer, setTimer] = useState(1500);
+    const [myTimer, setTimer] = useState(defaultTime);
     const [isCounting, setIsCounting] = useState(false);
 
     /**
@@ -52,6 +54,16 @@ export default function App() {
         });
     };
 
+    /**
+     * Calling this function when isCounting = false set timer to default value.
+     */
+    const resetTimer = () => {
+        if (isCounting) {
+            return;
+        }
+        setTimer(defaultTime);
+    };
+
     return (
         <div className={"App"}>
             <div className={"flex"}>
@@ -62,6 +74,7 @@ export default function App() {
                     removeTime={removeTime}
                     isCounting={isCounting}
                     startStop={startStop}
+                    resetTimer={resetTimer}
                 />
             </div>
         </div>

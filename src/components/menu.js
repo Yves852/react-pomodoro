@@ -34,9 +34,11 @@ export default function Menu(props) {
             <button
                 type={"button"}
                 onClick={() => {
-                    console.log("clicked Reset");
+                    props.resetTimer();
                 }}
-                className={"btn btn--normal"}>
+                className={`btn btn--normal ${
+                    props.isCounting ? "btn--disabled" : ""
+                }`}>
                 {"Reset"}
             </button>
         </div>
