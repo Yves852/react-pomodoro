@@ -1,21 +1,55 @@
 body {
     background-color: black;
     color: darkgray;
+    width: 100%;
 }
 
 h1 {
-    font-size: 6em;
+    font-size: 7em;
 }
 
 .App {
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    .flex {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+    }
 }
 
 .timer {
-    font-size: 4em;
+    font-size: 6em;
+    margin: 20px;
     div {
         display: inline;
+    }
+}
+
+.menu {
+    display: flex;
+    flex-flow: column wrap;
+    width: 260px; /* 2 * 110 + 4 * 10 */
+    height: 190px; /* 2 * 75 + 4 * 10 */
+
+    button {
+        margin: 10px;
+        width: 110px;
+        height: 75px;
+        background-color: darkslategrey;
+        color: darkgray;
+        border: none;
+        border-radius: 10px;
+    }
+
+    .button--big {
+        font-size: 3.5em;
+    }
+
+    .button--normal {
+        font-size: 2em;
     }
 }
