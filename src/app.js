@@ -3,55 +3,50 @@ import PomodoroTimer from "./components/pomodoro-timer";
 import Menu from "./components/menu";
 
 export default function App() {
-    const defaultTime = 1500;
+    const DEFAULT_TIME = 1500;
+    const MAX_TIME = 3600;
 
     /**
      * According to Francesco Cirillo, work should be divided to shunks of 25 minutes
      * separated with pauses. Therefore the default value will be 25 * 60 so 1500 seconds
      */
-    const [myTimer, setTimer] = useState(defaultTime);
+    const [myTimer, setTimer] = useState(DEFAULT_TIME);
     const [isCounting, setIsCounting] = useState(false);
 
     /**
-     * Add 5 minutes to the timer
+     * Add 5 minutes to the timer to a maximum of 60 minutes
      */
     const addTime = () => {
-        if (isCounting) {
+        if (isCounting || myTimer >= MAX_TIME) {
             return;
         }
-        const newTimer = myTimer + 300;
+        let newTimer = myTimer + 300;
+        if (newTimer > MAX_TIME) {
+            newTimer = MAX_TIME;
+        }
         setTimer(newTimer);
     };
 
     /**
-     * Remove 5 minutes to the timer
+     * Remove 5 minutes to the timer to a minimum of 0 minutes
      */
     const removeTime = () => {
         if (isCounting || myTimer <= 0) {
             return;
         }
-        const newTimer = myTimer - 300;
+        let newTimer = myTimer - 300;
+        if (newTimer < 0) {
+            newTimer = 0;
+        }
         setTimer(newTimer);
     };
 
     /**
-     * Calling this function reverse the 'isCounting' state on and off. This state is used to control timer progression.
-     * Wrap reversion in a promise to make instructions synchronous.
+     * Calling this function reverse the 'isCounting' state on and off. This state is used to control timer countdown.
      */
     const startStop = () => {
-        const a = new Promise(resolve => {
-            const newCounting = !isCounting;
-            setIsCounting(newCounting);
-            resolve(newCounting);
-        });
-        a.then(newCounting => {
-            console.log("isCounting", newCounting);
-            if (newCounting) {
-                console.log("Timer started");
-            } else {
-                console.log("Timer stopped");
-            }
-        });
+        const newCounting = !isCounting;
+        setIsCounting(newCounting);
     };
 
     /**
@@ -61,8 +56,21 @@ export default function App() {
         if (isCounting) {
             return;
         }
-        setTimer(defaultTime);
+        setTimer(DEFAULT_TIME);
     };
+
+    /**
+     * Timer countdown.
+     *
+     * Decrease every seconds if counter enabled (isCouting) and if timer is not at 0 or below.
+     */
+    setTimeout(() => {
+        if (!isCounting || myTimer <= 0) {
+            return;
+        }
+        const newTimer = myTimer - 1;
+        setTimer(newTimer);
+    }, 1000);
 
     return (
         <div className={"App"}>
