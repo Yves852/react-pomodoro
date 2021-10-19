@@ -1,11 +1,19 @@
 import React from "react";
 
-export default function PomodoroTimer() {
+export default function PomodoroTimer(props) {
+    /**
+     * Minutes is total_seconds / 60
+     * Seconds is remaining of total_seconds modulo 60
+     */
+    const minutes = Math.floor(props.myTimer / 60);
+    const seconds = Math.floor(props.myTimer % 60);
+
     return (
         <>
             <div className={"timer"}>
-                <div className={"minutes"}>{"10"}</div> {" : "}
-                <div className={"seconds"}>{"30"}</div>
+                <div className={"minutes"}>{minutes}</div>
+                <div>{" : "}</div>
+                <div className={"seconds"}>{seconds}</div>
             </div>
         </>
     );
