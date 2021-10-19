@@ -3,6 +3,19 @@ body {
     color: darkgray;
 }
 
-.timer div {
-    display: inline;
+h1 {
+    font-size: 6em;
+}
+
+.App {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.timer {
+    font-size: 4em;
+    div {
+        display: inline;
+    }
 }
