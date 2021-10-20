@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import useInterval from "use-interval";
 import PomodoroTimer from "./components/pomodoro-timer";
 import Menu from "./components/menu";
+import Modal from "./components/modal";
 
 export default function App() {
     const DEFAULT_TIME = 1500;
@@ -14,6 +15,7 @@ export default function App() {
     const [countDown, setCountDown] = useState(DEFAULT_TIME); // Time remaining
     const [isCounting, setIsCounting] = useState(false); // Bool to control timer and buttons
     const [myInterval, setMyInterval] = useState(null); // Enable / disable timer
+    const [showModal, setShowModal] = useState(false);
 
     /**
      * Add 5 minutes to the timer to a maximum of 60 minutes
@@ -47,7 +49,6 @@ export default function App() {
      * Called by the timer and decrease the countdown.
      */
     const decreaseCountDown = () => {
-        console.log("Counting", countDown);
         const newTimer = countDown - 1;
         setCountDown(newTimer);
     };
@@ -57,7 +58,6 @@ export default function App() {
      * We want timer to trigger every seconds.
      */
     const startTimer = () => {
-        console.log("Timer started");
         setMyInterval(1000);
     };
 
@@ -65,7 +65,6 @@ export default function App() {
      * Disable timer by setting time interval to null.
      */
     const stopTimer = () => {
-        console.log("Timer stopped");
         setMyInterval(null);
     };
 
@@ -98,12 +97,17 @@ export default function App() {
         setCountDown(DEFAULT_TIME);
     };
 
+    const closeModal = () => {
+        setShowModal(false);
+    };
+
     /**
      * Timer
      */
     useInterval(() => {
         if (countDown <= 0) {
             stopTimer();
+            setShowModal(true);
             return;
         }
         if (!isCounting) {
@@ -114,6 +118,7 @@ export default function App() {
 
     return (
         <div className={"App"}>
+            <Modal showModal={showModal} closeModal={closeModal} />
             <div className={"flex"}>
                 <h1>{"Pomodoro"}</h1>
                 <PomodoroTimer countDown={countDown} />
