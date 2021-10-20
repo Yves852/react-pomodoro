@@ -2,10 +2,11 @@ import React, {useState} from "react";
 import useInterval from "use-interval";
 import PomodoroTimer from "./components/pomodoro-timer";
 import Menu from "./components/menu";
-import Modal from "./components/modal";
+import ModalWindow from "./components/modal-window";
 
 export default function App() {
-    const DEFAULT_TIME = 1500;
+    //#region variables and states
+    const DEFAULT_TIME = 2;
     const MAX_TIME = 3600;
 
     /**
@@ -15,8 +16,10 @@ export default function App() {
     const [countDown, setCountDown] = useState(DEFAULT_TIME); // Time remaining
     const [isCounting, setIsCounting] = useState(false); // Bool to control timer and buttons
     const [myInterval, setMyInterval] = useState(null); // Enable / disable timer
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState(false); // Bool to display the modal window
+    //#endregion
 
+    //#region timer functions
     /**
      * Add 5 minutes to the timer to a maximum of 60 minutes
      */
@@ -88,7 +91,7 @@ export default function App() {
     };
 
     /**
-     * Calling this function when isCounting = false set timer to default value.
+     * Reset timer to default value when counter stopped
      */
     const resetCountDown = () => {
         if (isCounting) {
@@ -96,18 +99,26 @@ export default function App() {
         }
         setCountDown(DEFAULT_TIME);
     };
+    //#endregion
+
+    //#region modal
+    /**
+     * Modal opening and closing
+     */
+    const openModal = () => {
+        setShowModal(true);
+    };
 
     const closeModal = () => {
         setShowModal(false);
     };
+    //#endregion
 
-    /**
-     * Timer
-     */
+    //#region my timer
     useInterval(() => {
         if (countDown <= 0) {
             stopTimer();
-            setShowModal(true);
+            openModal();
             return;
         }
         if (!isCounting) {
@@ -115,10 +126,16 @@ export default function App() {
         }
         decreaseCountDown();
     }, myInterval);
+    //#endregion
 
+    //#region Render
     return (
         <div className={"App"}>
-            <Modal showModal={showModal} closeModal={closeModal} />
+            <ModalWindow
+                showModal={showModal}
+                openModal={openModal}
+                closeModal={closeModal}
+            />
             <div className={"flex"}>
                 <h1>{"Pomodoro"}</h1>
                 <PomodoroTimer countDown={countDown} />
@@ -132,4 +149,5 @@ export default function App() {
             </div>
         </div>
     );
+    //#endregion
 }
