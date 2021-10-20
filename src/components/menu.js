@@ -34,7 +34,7 @@ export default function Menu(props) {
             <button
                 type={"button"}
                 onClick={() => {
-                    props.resetTimer();
+                    props.resetCountDown();
                 }}
                 className={`btn btn--normal ${
                     props.isCounting ? "btn--disabled" : ""
