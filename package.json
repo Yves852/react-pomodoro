@@ -20,7 +20,8 @@
   "homepage": "https://github.com/Yves852/react-pomodoro#readme",
   "dependencies": {
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "use-interval": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",

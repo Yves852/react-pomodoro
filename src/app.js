@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import useInterval from "use-interval";
 import PomodoroTimer from "./components/pomodoro-timer";
 import Menu from "./components/menu";
 
@@ -10,79 +11,118 @@ export default function App() {
      * According to Francesco Cirillo, work should be divided to shunks of 25 minutes
      * separated with pauses. Therefore the default value will be 25 * 60 so 1500 seconds
      */
-    const [myTimer, setTimer] = useState(DEFAULT_TIME);
-    const [isCounting, setIsCounting] = useState(false);
+    const [countDown, setCountDown] = useState(DEFAULT_TIME); // Time remaining
+    const [isCounting, setIsCounting] = useState(false); // Bool to control timer and buttons
+    const [myInterval, setMyInterval] = useState(null); // Enable / disable timer
 
     /**
      * Add 5 minutes to the timer to a maximum of 60 minutes
      */
     const addTime = () => {
-        if (isCounting || myTimer >= MAX_TIME) {
+        if (isCounting || countDown >= MAX_TIME) {
             return;
         }
-        let newTimer = myTimer + 300;
+        let newTimer = countDown + 300;
         if (newTimer > MAX_TIME) {
             newTimer = MAX_TIME;
         }
-        setTimer(newTimer);
+        setCountDown(newTimer);
     };
 
     /**
      * Remove 5 minutes to the timer to a minimum of 0 minutes
      */
     const removeTime = () => {
-        if (isCounting || myTimer <= 0) {
+        if (isCounting || countDown <= 0) {
             return;
         }
-        let newTimer = myTimer - 300;
+        let newTimer = countDown - 300;
         if (newTimer < 0) {
             newTimer = 0;
         }
-        setTimer(newTimer);
+        setCountDown(newTimer);
     };
 
     /**
-     * Calling this function reverse the 'isCounting' state on and off. This state is used to control timer countdown.
+     * Called by the timer and decrease the countdown.
+     */
+    const decreaseCountDown = () => {
+        console.log("Counting", countDown);
+        const newTimer = countDown - 1;
+        setCountDown(newTimer);
+    };
+
+    /**
+     * Enable timer by setting a time interval.
+     * We want timer to trigger every seconds.
+     */
+    const startTimer = () => {
+        console.log("Timer started");
+        setMyInterval(1000);
+    };
+
+    /**
+     * Disable timer by setting time interval to null.
+     */
+    const stopTimer = () => {
+        console.log("Timer stopped");
+        setMyInterval(null);
+    };
+
+    /**
+     * Calling this function reverse the 'isCounting' state on and off.
+     * This state is used to enable or disable timer (function calls) and enable or disable buttons.
      */
     const startStop = () => {
-        const newCounting = !isCounting;
-        setIsCounting(newCounting);
+        const a = new Promise(resolve => {
+            const counting = !isCounting;
+            setIsCounting(counting);
+            resolve(counting);
+        });
+        a.then(counting => {
+            if (counting) {
+                startTimer();
+            } else {
+                stopTimer();
+            }
+        });
     };
 
     /**
      * Calling this function when isCounting = false set timer to default value.
      */
-    const resetTimer = () => {
+    const resetCountDown = () => {
         if (isCounting) {
             return;
         }
-        setTimer(DEFAULT_TIME);
+        setCountDown(DEFAULT_TIME);
     };
 
     /**
-     * Timer countdown.
-     *
-     * Decrease every seconds if counter enabled (isCouting) and if timer is not at 0 or below.
+     * Timer
      */
-    setTimeout(() => {
-        if (!isCounting || myTimer <= 0) {
+    useInterval(() => {
+        if (countDown <= 0) {
+            stopTimer();
             return;
         }
-        const newTimer = myTimer - 1;
-        setTimer(newTimer);
-    }, 1000);
+        if (!isCounting) {
+            return;
+        }
+        decreaseCountDown();
+    }, myInterval);
 
     return (
         <div className={"App"}>
             <div className={"flex"}>
                 <h1>{"Pomodoro"}</h1>
-                <PomodoroTimer myTimer={myTimer} />
+                <PomodoroTimer countDown={countDown} />
                 <Menu
                     addTime={addTime}
                     removeTime={removeTime}
                     isCounting={isCounting}
                     startStop={startStop}
-                    resetTimer={resetTimer}
+                    resetCountDown={resetCountDown}
                 />
             </div>
         </div>
