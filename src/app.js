@@ -133,11 +133,8 @@ export default function App() {
     //#region Timer
     useInterval(() => {
         if (countDown <= 0) {
-            stopTimer();
+            startStop();
             openModal();
-            return;
-        }
-        if (!isCounting) {
             return;
         }
         decreaseCountDown();
