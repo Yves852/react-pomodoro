@@ -1,11 +1,13 @@
 {
   "name": "react-pomodoro",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "source": "src/index.html",
   "scripts": {
     "start": "parcel ./src/index.html --open",
-    "build": "parcel build ./src/index.html",
+    "build": "npm-run-all build:css build:parcel",
+    "build:css": "sass ./src/style.scss ./src/style.css",
+    "build:parcel": "parcel build ./src/index.html",
     "prebuild": "rm -rf dist"
   },
   "repository": {
