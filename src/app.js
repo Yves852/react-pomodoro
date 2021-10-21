@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 import useInterval from "use-interval";
+import Swal from "sweetalert2";
 import PomodoroTimer from "./components/pomodoro-timer";
 import Menu from "./components/menu";
-import ModalWindow from "./components/modal-window";
 
 export default function App() {
     //#region Variables and states
@@ -112,6 +112,21 @@ export default function App() {
     const closeModal = () => {
         setShowModal(false);
     };
+
+    if (showModal) {
+        Swal.fire({
+            title: "Time up!",
+            text: "Good work. Take a pause.",
+            icon: "success",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+            showConfirmButton: true,
+        }).then(() => {
+            console.log("capture alert close");
+            closeModal();
+        });
+    }
     //#endregion
 
     //#region Timer
@@ -131,11 +146,6 @@ export default function App() {
     //#region Render
     return (
         <div className={"App"}>
-            <ModalWindow
-                showModal={showModal}
-                openModal={openModal}
-                closeModal={closeModal}
-            />
             <div className={"flex"}>
                 <h1>{"Pomodoro"}</h1>
                 <PomodoroTimer countDown={countDown} />
