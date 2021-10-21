@@ -14,6 +14,7 @@ export default function App() {
      * separated with pauses. Therefore the default value will be 25 * 60 so 1500 seconds
      */
     const [countDown, setCountDown] = useState(DEFAULT_TIME); // Time remaining
+    const [userCountdown, setUserCountdown] = useState(DEFAULT_TIME); // Remember user time choice for time up
     const [isCounting, setIsCounting] = useState(false); // Bool to control timer and buttons
     const [myInterval, setMyInterval] = useState(null); // Enable / disable timer
     const [showModal, setShowModal] = useState(false); // Bool to display the modal window
@@ -32,6 +33,7 @@ export default function App() {
             newTimer = MAX_TIME;
         }
         setCountDown(newTimer);
+        setUserCountdown(newTimer);
     };
 
     /**
@@ -46,6 +48,7 @@ export default function App() {
             newTimer = 0;
         }
         setCountDown(newTimer);
+        setUserCountdown(newTimer);
     };
 
     /**
@@ -91,13 +94,28 @@ export default function App() {
     };
 
     /**
-     * Reset timer to default value when counter stopped
+     * Reset timer to user or default value when counter stopped.
+     * Hold ctlr and click to set default value.
      */
-    const resetCountDown = () => {
+    const resetCountDown = e => {
         if (isCounting) {
             return;
         }
-        setCountDown(DEFAULT_TIME);
+        if (e.ctrlKey) {
+            setCountDown(DEFAULT_TIME);
+            return;
+        }
+        setCountDown(userCountdown);
+    };
+
+    /**
+     * Restart timer with the previous user time from the modal window with button 'again'
+     */
+    const restart = () => {
+        setCountDown(userCountdown);
+        if (!isCounting) {
+            startStop();
+        }
     };
     //#endregion
 
@@ -113,6 +131,9 @@ export default function App() {
         setShowModal(false);
     };
 
+    /**
+     * useEffect() ensure that the wrapped code is launched only after react finished rendering
+     */
     useEffect(() => {
         if (showModal) {
             Swal.fire({
@@ -123,8 +144,13 @@ export default function App() {
                 allowEscapeKey: false,
                 allowEnterKey: false,
                 showConfirmButton: true,
-            }).then(() => {
+                showCancelButton: true,
+                cancelButtonText: "Again",
+            }).then(SweetAlertResult => {
                 closeModal();
+                if (SweetAlertResult.isDismissed) {
+                    restart();
+                }
             });
         }
     });
