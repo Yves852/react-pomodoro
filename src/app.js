@@ -78,7 +78,11 @@ export default function App() {
      * Calling this function reverse the 'isCounting' state on and off.
      * This state is used to enable or disable timer (function calls) and enable or disable buttons.
      */
-    const startStop = () => {
+    const startStop = e => {
+        // Handle click and stop user from starting time from 0 or below
+        if (e && countDown <= 0) {
+            return;
+        }
         const a = new Promise(resolve => {
             const counting = !isCounting;
             setIsCounting(counting);
@@ -179,6 +183,7 @@ export default function App() {
                     isCounting={isCounting}
                     startStop={startStop}
                     resetCountDown={resetCountDown}
+                    countDown={countDown}
                 />
             </div>
         </div>
