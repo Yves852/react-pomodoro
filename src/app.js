@@ -5,7 +5,7 @@ import Menu from "./components/menu";
 import ModalWindow from "./components/modal-window";
 
 export default function App() {
-    //#region variables and states
+    //#region Variables and states
     const DEFAULT_TIME = 2;
     const MAX_TIME = 3600;
 
@@ -19,7 +19,7 @@ export default function App() {
     const [showModal, setShowModal] = useState(false); // Bool to display the modal window
     //#endregion
 
-    //#region timer functions
+    //#region Timer functions
     /**
      * Add 5 minutes to the timer to a maximum of 60 minutes
      */
@@ -101,7 +101,7 @@ export default function App() {
     };
     //#endregion
 
-    //#region modal
+    //#region Modal
     /**
      * Modal opening and closing
      */
@@ -114,7 +114,7 @@ export default function App() {
     };
     //#endregion
 
-    //#region my timer
+    //#region Timer
     useInterval(() => {
         if (countDown <= 0) {
             stopTimer();
