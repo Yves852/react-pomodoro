@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import useInterval from "use-interval";
 import Swal from "sweetalert2";
 import PomodoroTimer from "./components/pomodoro-timer";
@@ -113,20 +113,21 @@ export default function App() {
         setShowModal(false);
     };
 
-    if (showModal) {
-        Swal.fire({
-            title: "Time up!",
-            text: "Good work. Take a pause.",
-            icon: "success",
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            allowEnterKey: false,
-            showConfirmButton: true,
-        }).then(() => {
-            console.log("capture alert close");
-            closeModal();
-        });
-    }
+    useEffect(() => {
+        if (showModal) {
+            Swal.fire({
+                title: "Time up!",
+                text: "Good work. Take a pause.",
+                icon: "success",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                showConfirmButton: true,
+            }).then(() => {
+                closeModal();
+            });
+        }
+    });
     //#endregion
 
     //#region Timer
