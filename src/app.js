@@ -6,7 +6,7 @@ import Menu from "./components/menu";
 
 export default function App() {
     //#region Variables and states
-    const DEFAULT_TIME = 2;
+    const DEFAULT_TIME = 5;
     const MAX_TIME = 3600;
 
     /**
@@ -27,7 +27,7 @@ export default function App() {
         if (isCounting || countDown >= MAX_TIME) {
             return;
         }
-        let newTimer = countDown + 300;
+        let newTimer = countDown + 1;
         if (newTimer > MAX_TIME) {
             newTimer = MAX_TIME;
         }
@@ -41,7 +41,7 @@ export default function App() {
         if (isCounting || countDown <= 0) {
             return;
         }
-        let newTimer = countDown - 300;
+        let newTimer = countDown - 1;
         if (newTimer < 0) {
             newTimer = 0;
         }
