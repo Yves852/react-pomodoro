@@ -25,16 +25,18 @@ export default function Menu(props) {
             </button>
             <button
                 type={"button"}
-                onClick={() => {
-                    props.startStop();
+                onClick={e => {
+                    props.startStop(e);
                 }}
-                className={"btn btn--normal"}>
+                className={`btn btn--normal ${
+                    props.countDown <= 0 ? "btn--disabled" : ""
+                }`}>
                 {!props.isCounting ? "Start" : "Stop"}
             </button>
             <button
                 type={"button"}
-                onClick={() => {
-                    props.resetTimer();
+                onClick={e => {
+                    props.resetCountDown(e);
                 }}
                 className={`btn btn--normal ${
                     props.isCounting ? "btn--disabled" : ""

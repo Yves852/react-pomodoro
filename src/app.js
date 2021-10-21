@@ -1,82 +1,200 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
+import useInterval from "use-interval";
+import Swal from "sweetalert2";
 import PomodoroTimer from "./components/pomodoro-timer";
 import Menu from "./components/menu";
 
 export default function App() {
-    const defaultTime = 1500;
+    //#region Variables and states
+    const DEFAULT_TIME = 1500;
+    const MAX_TIME = 3600;
 
     /**
      * According to Francesco Cirillo, work should be divided to shunks of 25 minutes
      * separated with pauses. Therefore the default value will be 25 * 60 so 1500 seconds
      */
-    const [myTimer, setTimer] = useState(defaultTime);
-    const [isCounting, setIsCounting] = useState(false);
+    const [countDown, setCountDown] = useState(DEFAULT_TIME); // Time remaining
+    const [userCountdown, setUserCountdown] = useState(DEFAULT_TIME); // Remember user time choice for time up
+    const [isCounting, setIsCounting] = useState(false); // Bool to control timer and buttons
+    const [myInterval, setMyInterval] = useState(null); // Enable / disable timer
+    const [showModal, setShowModal] = useState(false); // Bool to display the modal window
+    //#endregion
 
+    //#region Timer functions
     /**
-     * Add 5 minutes to the timer
+     * Add 5 minutes to the timer to a maximum of 60 minutes
      */
     const addTime = () => {
+        if (isCounting || countDown >= MAX_TIME) {
+            return;
+        }
+        let newTimer = countDown + 300;
+        if (newTimer > MAX_TIME) {
+            newTimer = MAX_TIME;
+        }
+        setCountDown(newTimer);
+        setUserCountdown(newTimer);
+    };
+
+    /**
+     * Remove 5 minutes to the timer to a minimum of 0 minutes
+     */
+    const removeTime = () => {
+        if (isCounting || countDown <= 0) {
+            return;
+        }
+        let newTimer = countDown - 300;
+        if (newTimer <= 0) {
+            newTimer = 300;
+        }
+        setCountDown(newTimer);
+        setUserCountdown(newTimer);
+    };
+
+    /**
+     * Called by the timer and decrease the countdown.
+     */
+    const decreaseCountDown = () => {
+        const newTimer = countDown - 1;
+        setCountDown(newTimer);
+    };
+
+    /**
+     * Enable timer by setting a time interval.
+     * We want timer to trigger every seconds.
+     */
+    const startTimer = () => {
+        setMyInterval(1000);
+    };
+
+    /**
+     * Disable timer by setting time interval to null.
+     */
+    const stopTimer = () => {
+        setMyInterval(null);
+    };
+
+    /**
+     * Reset timer to user or default value when counter stopped.
+     * Hold ctlr and click to set default value.
+     *
+     * Check e as the function can be called by the modal instead of a button
+     */
+    const resetCountDown = e => {
         if (isCounting) {
             return;
         }
-        const newTimer = myTimer + 300;
-        setTimer(newTimer);
-    };
-
-    /**
-     * Remove 5 minutes to the timer
-     */
-    const removeTime = () => {
-        if (isCounting || myTimer <= 0) {
+        if (e && e.ctrlKey) {
+            setCountDown(DEFAULT_TIME);
             return;
         }
-        const newTimer = myTimer - 300;
-        setTimer(newTimer);
+        setCountDown(userCountdown);
     };
 
     /**
-     * Calling this function reverse the 'isCounting' state on and off. This state is used to control timer progression.
-     * Wrap reversion in a promise to make instructions synchronous.
+     * Calling this function reverse the 'isCounting' state on and off.
+     * This state is used to enable or disable timer (function calls) and enable or disable buttons.
      */
-    const startStop = () => {
+    const startStop = e => {
+        // Handle click and stop user from starting time from 0 or below
+        if (e && countDown <= 0) {
+            return;
+        }
+        // Handle modal call to reset and restart timer
+        if (!isCounting && countDown <= 0) {
+            resetCountDown();
+        }
         const a = new Promise(resolve => {
-            const newCounting = !isCounting;
-            setIsCounting(newCounting);
-            resolve(newCounting);
+            const counting = !isCounting;
+            setIsCounting(counting);
+            resolve(counting);
         });
-        a.then(newCounting => {
-            console.log("isCounting", newCounting);
-            if (newCounting) {
-                console.log("Timer started");
+        a.then(counting => {
+            if (counting) {
+                startTimer();
             } else {
-                console.log("Timer stopped");
+                stopTimer();
             }
         });
     };
 
     /**
-     * Calling this function when isCounting = false set timer to default value.
+     * Restart timer with the previous user time from the modal window with button 'again'
      */
-    const resetTimer = () => {
-        if (isCounting) {
-            return;
+    const restart = () => {
+        setCountDown(userCountdown);
+        if (!isCounting) {
+            startStop();
         }
-        setTimer(defaultTime);
+    };
+    //#endregion
+
+    //#region Modal functions
+    /**
+     * Modal opening and closing
+     */
+    const openModal = () => {
+        setShowModal(true);
     };
 
+    const closeModal = () => {
+        setShowModal(false);
+    };
+    //#endregion
+
+    //#region Modal display
+    /**
+     * useEffect() ensure that the wrapped code is launched only after react finished rendering
+     */
+    useEffect(() => {
+        if (showModal) {
+            Swal.fire({
+                title: "Time up!",
+                text: "Good work. Take a pause.",
+                icon: "success",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                showConfirmButton: true,
+                showCancelButton: true,
+                cancelButtonText: "Again",
+            }).then(SweetAlertResult => {
+                closeModal();
+                if (SweetAlertResult.isDismissed) {
+                    restart();
+                }
+            });
+        }
+    });
+    //#endregion
+
+    //#region Timer
+    useInterval(() => {
+        if (countDown <= 0) {
+            startStop();
+            openModal();
+            return;
+        }
+        decreaseCountDown();
+    }, myInterval);
+    //#endregion
+
+    //#region Render
     return (
         <div className={"App"}>
             <div className={"flex"}>
                 <h1>{"Pomodoro"}</h1>
-                <PomodoroTimer myTimer={myTimer} />
+                <PomodoroTimer countDown={countDown} />
                 <Menu
                     addTime={addTime}
                     removeTime={removeTime}
                     isCounting={isCounting}
                     startStop={startStop}
-                    resetTimer={resetTimer}
+                    resetCountDown={resetCountDown}
+                    countDown={countDown}
                 />
             </div>
         </div>
     );
+    //#endregion
 }
