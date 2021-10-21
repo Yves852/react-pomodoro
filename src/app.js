@@ -129,7 +129,7 @@ export default function App() {
     };
     //#endregion
 
-    //#region Modal
+    //#region Modal functions
     /**
      * Modal opening and closing
      */
@@ -140,7 +140,9 @@ export default function App() {
     const closeModal = () => {
         setShowModal(false);
     };
+    //#endregion
 
+    //#region Modal display
     /**
      * useEffect() ensure that the wrapped code is launched only after react finished rendering
      */
