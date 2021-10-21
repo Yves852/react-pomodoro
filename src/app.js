@@ -75,6 +75,23 @@ export default function App() {
     };
 
     /**
+     * Reset timer to user or default value when counter stopped.
+     * Hold ctlr and click to set default value.
+     *
+     * Check e as the function can be called by the modal instead of a button
+     */
+    const resetCountDown = e => {
+        if (isCounting) {
+            return;
+        }
+        if (e && e.ctrlKey) {
+            setCountDown(DEFAULT_TIME);
+            return;
+        }
+        setCountDown(userCountdown);
+    };
+
+    /**
      * Calling this function reverse the 'isCounting' state on and off.
      * This state is used to enable or disable timer (function calls) and enable or disable buttons.
      */
@@ -82,6 +99,10 @@ export default function App() {
         // Handle click and stop user from starting time from 0 or below
         if (e && countDown <= 0) {
             return;
+        }
+        // Handle modal call to reset and restart timer
+        if (!isCounting && countDown <= 0) {
+            resetCountDown();
         }
         const a = new Promise(resolve => {
             const counting = !isCounting;
@@ -95,21 +116,6 @@ export default function App() {
                 stopTimer();
             }
         });
-    };
-
-    /**
-     * Reset timer to user or default value when counter stopped.
-     * Hold ctlr and click to set default value.
-     */
-    const resetCountDown = e => {
-        if (isCounting) {
-            return;
-        }
-        if (e.ctrlKey) {
-            setCountDown(DEFAULT_TIME);
-            return;
-        }
-        setCountDown(userCountdown);
     };
 
     /**
